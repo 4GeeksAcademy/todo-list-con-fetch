@@ -1,4 +1,12 @@
+input:hover > * {
+    visibility: visible;
+    float: right;
+}
 
+.icono-oculto {
+      visibility: hidden;
+      
+}
 /* 
 
     You can write your own styles here...
