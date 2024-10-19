@@ -1,12 +1,11 @@
-input:hover > * {
+li:hover > * {
     visibility: visible;
-    float: right;
+    float: center;
 }
 
 .icono-oculto {
       visibility: hidden;
-      
-}
+    }
 /* 
 
     You can write your own styles here...
