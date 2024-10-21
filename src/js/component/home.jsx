@@ -14,7 +14,7 @@ const Home = () => {
 			<div className= "card">
 			<h1 className="text-center mt-3 text-secondary">To-Do's</h1>
 			<div className="mx-auto col-2" />
-			<input type="text" className="form-control" placeholder="¿Qué necesitas hacer?"
+			<input type="text" className="form-control" placeholder autoFocus="¿Qué necesitas hacer?"
 				value={nuevaTarea} onChange={(evento) => {
 					setNuevaTarea(evento.target.value)
 
