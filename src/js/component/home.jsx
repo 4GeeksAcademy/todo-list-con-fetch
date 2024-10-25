@@ -8,14 +8,27 @@ import rigoImage from "../../img/rigo-baby.jpg";
 const Home = () => {
 	let [listaDeTareas, setListaDeTareas] = useState([])
 	const [nuevaTarea, setNuevaTarea] = useState("")
+	async function crearUsuario() {
+		const url = "https://playground.4geeks.com/todo/users/jime"
+		const resp = await fetch(url, {
+			method: "POST"
 
-	useEffect(() => {
-		const cargarTareas = async () => {
-			const url = "https://playground.4geeks.com/todo/users/jime"
-			const resp = await fetch(url)
-			const data = await resp.json()
-			setListaDeTareas(data.todos)
+		})
+		if (resp.ok) {
+			cargarTareas()
 		}
+	}
+	const cargarTareas = async () => {
+		const url = "https://playground.4geeks.com/todo/users/jime"
+		const resp = await fetch(url)
+		if (resp.status == 404) {
+			crearUsuario()
+			return
+		}
+		const data = await resp.json()
+		setListaDeTareas(data.todos)
+	}
+	useEffect(() => {
 		cargarTareas()
 	}, [])
 
@@ -29,37 +42,44 @@ const Home = () => {
 						setNuevaTarea(evento.target.value)
 
 					}}
-					onKeyUp={(evento) => {
+					onKeyUp={async (evento) => {
 						if (evento.key == "Enter") {
 							const url = "https://playground.4geeks.com/todo/todos/jime"
-							const resp = await fetch(url,{
+							const resp = await fetch(url, {
 								method: "POST",
 								headers: {
 									'Content-Type': 'application/json'
 								},
 								body: JSON.stringify({
-									label:nuevaTarea,
-									is_done:false
+									label: nuevaTarea,
+									is_done: false
 								})
 							});
-							if (resp.ok){
+							if (resp.ok) {
 								cargarTareas()
+								setNuevaTarea("")
 							}
 						}
-						}
-				console.log(evento.key)
-					}}
+					}
+						// console.log(evento.key)
+					}
 				/>
 				<ul className="list-group list-group-flush p-2 d-flex justify-content-center align-items-center">
-					{listaDeTareas.map((item, index) => {
+					{listaDeTareas && listaDeTareas.map((item, index) => {
 						return (
 							<li key={index} className="list-group-item-sp w-50 rounded-pill bg-light text-center">
 								{item.label}
-								<i onClick={() => {
+								<i onClick={async () => {
+									const url = "https://playground.4geeks.com/todo/todos/" + item.id
 									const aux = listaDeTareas.filter((_task, ind) => {
 										return (ind != index)
 									})
-									setListaDeTareas(aux)
+									const resp = await fetch(url, {
+										method: "DELETE"
+									})
+									if (resp.ok) {
+										setListaDeTareas(aux)
+									}
 								}}
 									className="fa-solid fa-trash icono-oculto"></i></li>
 						)
@@ -69,7 +89,7 @@ const Home = () => {
 
 				</ul>
 				<span className="text-primary">
-					{(listaDeTareas.length == 0) ? "No hay tareas, agregar una " : `Tienes ${listaDeTareas.length} tarea(s) pendiente(s)`}
+					{listaDeTareas && (listaDeTareas.length == 0) ? "No hay tareas, agregar una " : `Tienes ${listaDeTareas.length} tarea(s) pendiente(s)`}
 				</span>
 			</div>
 		</div>
